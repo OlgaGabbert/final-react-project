@@ -2,11 +2,14 @@ import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 
 function App() {
+
+  // State variables for the hooks
   const [textInput, setTextInput] = useState('');
   const [randomJoke, setRandomJoke] = useState('');
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
   const [randomManateeJoke, setRandomManateeJoke] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [savedJokes, setSavedJokes] = useState(new Set());
 
   const jokesRef = useRef(null);
   const chuckNorrisJokesRef = useRef(null);
@@ -113,6 +116,21 @@ function App() {
     }
   };
 
+  // Handle save joke click
+  const saveJoke = () => {
+    if (randomJoke) {
+      setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomJoke]));
+    }
+
+    if (randomChuckNorrisJoke) {
+      setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomChuckNorrisJoke]));
+    }
+
+    if (randomManateeJoke) {
+      setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomManateeJoke]));
+    }
+  };
+
   useEffect(() => {
     // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up
     const handleScroll = () => {
@@ -143,6 +161,7 @@ function App() {
         <a href="#jokes">Get Dad Jokes</a>
         <a href="#chuckNorrisJokes">Get Chuck Norris Jokes</a>
         <a href="#manateeJokes">Get Manatee Jokes</a>
+        {savedJokes.length > 0 && <a href='#savedJokes'>Saved Jokes</a>}
       </nav>
 
       <section id="header">
@@ -171,7 +190,7 @@ function App() {
                 {randomJoke && (
                   <div>
                     <p>{randomJoke}</p>
-                    <button>Save this joke</button>
+                    <button onClick={saveJoke}>Save this joke</button>
                   </div>
                 )}
               </div>
@@ -193,10 +212,10 @@ function App() {
                 {randomChuckNorrisJoke && (
                   <div>
                     <p>{randomChuckNorrisJoke}</p>
-                    <button>Save this joke</button>
+                    <button onClick={saveJoke}>Save this joke</button>
                   </div>
                 )}
-                </div>
+              </div>
             </div>
           </article>
         </section>
@@ -215,17 +234,31 @@ function App() {
                 {randomManateeJoke && (
                   <div>
                     <p>{randomManateeJoke}</p>
-                    <button>Save this joke</button>
+                    <button onClick={saveJoke}>Save this joke</button>
                   </div>
                 )}
               </div>
             </div>
           </article>
         </section>
+          {savedJokes && (
+            <section id='savedJokes'>
+              <article>
+                <div>
+                  <h3>Saved Jokes:</h3>
+                  <ul>
+                    {[...savedJokes].map((joke, index) => (
+                      <li key={index}>{joke}</li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            </section>
+          )}
       </div>
 
-      {errorMessage && <p>{errorMessage}</p>}
-    </div>
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
   );
 }
 
