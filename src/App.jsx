@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function App() {
   const [textInput, setTextInput] = useState('');
@@ -7,6 +7,10 @@ function App() {
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
   const [randomManateeJoke, setRandomManateeJoke] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const jokesRef = useRef(null);
+  const chuckNorrisJokesRef = useRef(null);
+  const manateeJokesRef = useRef(null);
 
   // Call Dad Jokes API
 
@@ -68,22 +72,22 @@ function App() {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch joke");
       }
-  
+
       const manateeJoke = await response.json();
       const manateeSetUp = manateeJoke.setup;
       const manateePunchLine = manateeJoke.punchline;
-  
+
       setRandomManateeJoke(`${manateeSetUp} <br> ${manateePunchLine}`);
     } catch (error) {
       console.error(error);
       setRandomManateeJoke("Failed to fetch joke :(");
       setErrorMessage("Failed to fetch joke :(");
     }
-  };  
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -94,10 +98,13 @@ function App() {
     try {
       if (text === 'dad') {
         await fetchRandomJoke();
+        jokesRef.current.scrollIntoView({ behavior: 'smooth' });
       } else if (text === 'manatee') {
         await fetchManateeJoke();
+        manateeJokesRef.current.scrollIntoView({ behavior: 'smooth' });
       } else if (text === 'chuck norris') {
         await fetchChuckNorrisJoke();
+        chuckNorrisJokesRef.current.scrollIntoView({ behavior: 'smooth' });
       } else {
         throw new Error('Check your spelling and try again.');
       }
@@ -150,47 +157,68 @@ function App() {
       </section>
 
       <div id="content">
-        <section id="jokes">
+        <section id="jokes" ref={jokesRef}>
           <article>
             <div className="getRandomJokes">
               <h2>Get Dad Jokes</h2>
               <div id="getJoke">
-                <button onClick={fetchRandomJoke}>Get another Dad Joke</button>
+                <button onClick={fetchRandomJoke}>Get a Dad Joke</button>
               </div>
             </div>
 
             <div className="randomJoke">
-              <div id="joke-container">{randomJoke}</div>
+              <div id="joke-container">
+                {randomJoke && (
+                  <div>
+                    <p>{randomJoke}</p>
+                    <button>Save this joke</button>
+                  </div>
+                )}
+              </div>
             </div>
           </article>
         </section>
 
-        <section id="chuckNorrisJokes">
+        <section id="chuckNorrisJokes" ref={chuckNorrisJokesRef}>
           <article>
             <div className="getRandomJokes">
               <h2>Get Chuck Norris Jokes</h2>
               <div id="getJoke">
-                <button onClick={fetchChuckNorrisJoke}>Get another Chuck Norris Joke</button>
+                <button onClick={fetchChuckNorrisJoke}>Get a Chuck Norris Joke</button>
               </div>
             </div>
 
             <div className="randomJoke">
-              <div id="chuck-joke-container">{randomChuckNorrisJoke}</div>
+              <div id="chuck-joke-container">
+                {randomChuckNorrisJoke && (
+                  <div>
+                    <p>{randomChuckNorrisJoke}</p>
+                    <button>Save this joke</button>
+                  </div>
+                )}
+                </div>
             </div>
           </article>
         </section>
 
-        <section id="manateeJokes">
+        <section id="manateeJokes" ref={manateeJokesRef}>
           <article>
             <div className="getRandomJokes">
               <h2>Get Manatee Jokes</h2>
               <div id="getJoke">
-                <button onClick={fetchManateeJoke}>Get another Manatee Joke</button>
+                <button onClick={fetchManateeJoke}>Get a Manatee Joke</button>
               </div>
             </div>
 
             <div className="randomJoke">
-              <div id="manatee-container" dangerouslySetInnerHTML={{ __html: randomManateeJoke }}></div>
+              <div id="manatee-container">
+                {randomManateeJoke && (
+                  <div>
+                    <p>{randomManateeJoke}</p>
+                    <button>Save this joke</button>
+                  </div>
+                )}
+              </div>
             </div>
           </article>
         </section>
