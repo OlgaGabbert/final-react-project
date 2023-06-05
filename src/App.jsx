@@ -9,11 +9,18 @@ function App() {
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
   const [randomManateeJoke, setRandomManateeJoke] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [savedJokes, setSavedJokes] = useState(new Set());
+  // const [savedJokes, setSavedJokes] = useState(new Set());
 
   const jokesRef = useRef(null);
   const chuckNorrisJokesRef = useRef(null);
   const manateeJokesRef = useRef(null);
+
+
+  // Check if there are saved jokes, get them from localstorage, otherwise initialize empty Set
+  const [savedJokes, setSavedJokes] = useState(() => {
+    const savedJokesFromStorage = localStorage.getItem('savedJokes');
+    return savedJokesFromStorage ? new Set(JSON.parse(savedJokesFromStorage)) : new Set();
+  });
 
   // Call Dad Jokes API
 
@@ -117,18 +124,54 @@ function App() {
   };
 
   // Handle save joke click
+
+  // const saveJoke = () => {
+  //   if (randomJoke) {
+  //     setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomJoke]));
+  //   }
+
+  //   if (randomChuckNorrisJoke) {
+  //     setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomChuckNorrisJoke]));
+  //   }
+
+  //   if (randomManateeJoke) {
+  //     setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomManateeJoke]));
+  //   }
+  // };
+
   const saveJoke = () => {
     if (randomJoke) {
-      setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomJoke]));
+      setSavedJokes((prevSavedJokes) => {
+        const newSavedJokes = new Set([...prevSavedJokes, randomJoke]);
+        localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
+        return newSavedJokes;
+      });
     }
 
     if (randomChuckNorrisJoke) {
-      setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomChuckNorrisJoke]));
+      setSavedJokes((prevSavedJokes) => {
+        const newSavedJokes = new Set([...prevSavedJokes, randomChuckNorrisJoke]);
+        localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
+        return newSavedJokes;
+      });
     }
 
     if (randomManateeJoke) {
-      setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomManateeJoke]));
+      setSavedJokes((prevSavedJokes) => {
+        const newSavedJokes = new Set([...prevSavedJokes, randomManateeJoke]);
+        localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
+        return newSavedJokes;
+      });
     }
+  };
+
+  const deleteJoke = (joke) => {
+    setSavedJokes((prevSavedJokes) => {
+      const updatedSavedJokes = new Set([...prevSavedJokes]);
+      updatedSavedJokes.delete(joke);
+      localStorage.setItem('savedJokes', JSON.stringify([...updatedSavedJokes]));
+      return updatedSavedJokes;
+    });
   };
 
   useEffect(() => {
@@ -248,7 +291,10 @@ function App() {
                   <h3>Saved Jokes:</h3>
                   <ul>
                     {[...savedJokes].map((joke, index) => (
-                      <li key={index}>{joke}</li>
+                      <li key={index}>
+                        {joke}
+                        <button onClick={() => deleteJoke(joke)}>Delete</button>
+                      </li>
                     ))}
                   </ul>
                 </div>
