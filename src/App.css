@@ -24,7 +24,7 @@ section {
   min-height: 100vh;
 }
 
-#header, #jokes, #chuckNorrisJokes, #manateeJokes {
+#header, #jokes, #chuckNorrisJokes, #manateeJokes, #savedJokes {
   color: #0f2852;
   padding: 20px;
   margin: 0px auto;
@@ -82,6 +82,7 @@ article, .randomJokeCard {
   max-width: 600px;
   margin: 0px auto;
   text-align: center;
+  padding-top: 130px;
 }
 
 .randomJokeCard {

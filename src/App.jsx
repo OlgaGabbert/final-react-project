@@ -9,21 +9,20 @@ function App() {
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
   const [randomManateeJoke, setRandomManateeJoke] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  // const [savedJokes, setSavedJokes] = useState(new Set());
 
+  // Ref variables for reference to scroll there
   const jokesRef = useRef(null);
   const chuckNorrisJokesRef = useRef(null);
   const manateeJokesRef = useRef(null);
+  const savedJokesRef = useRef(null);
 
-
-  // Check if there are saved jokes, get them from localstorage, otherwise initialize empty Set
+  // Check if there are saved jokes, get them from localstorage, otherwise initialize empty Set to ensure uniquness
   const [savedJokes, setSavedJokes] = useState(() => {
     const savedJokesFromStorage = localStorage.getItem('savedJokes');
     return savedJokesFromStorage ? new Set(JSON.parse(savedJokesFromStorage)) : new Set();
   });
 
   // Call Dad Jokes API
-
   const fetchRandomJoke = async () => {
     try {
       const response = await fetch("https://icanhazdadjoke.com", {
@@ -69,7 +68,7 @@ function App() {
     }
   };
 
-  // Call Manatee Jokes API
+  // Call Manatee Jokes API with vite_api_key;
   const fetchManateeJoke = async () => {
     try {
       const apiKey = import.meta.env.VITE_API_KEY;
@@ -99,7 +98,7 @@ function App() {
     }
   };
 
-  // Handle form submission
+  // Handle form submission depending on user's input
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -123,22 +122,7 @@ function App() {
     }
   };
 
-  // Handle save joke click
-
-  // const saveJoke = () => {
-  //   if (randomJoke) {
-  //     setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomJoke]));
-  //   }
-
-  //   if (randomChuckNorrisJoke) {
-  //     setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomChuckNorrisJoke]));
-  //   }
-
-  //   if (randomManateeJoke) {
-  //     setSavedJokes((prevSavedJokes) => new Set([...prevSavedJokes, randomManateeJoke]));
-  //   }
-  // };
-
+  // Handle save joke click plus localStorage
   const saveJoke = () => {
     if (randomJoke) {
       setSavedJokes((prevSavedJokes) => {
@@ -163,8 +147,10 @@ function App() {
         return newSavedJokes;
       });
     }
+    savedJokesRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // handle delete of saved jokes from localStorage (update savedJokes array)
   const deleteJoke = (joke) => {
     setSavedJokes((prevSavedJokes) => {
       const updatedSavedJokes = new Set([...prevSavedJokes]);
@@ -173,6 +159,14 @@ function App() {
       return updatedSavedJokes;
     });
   };
+
+  // Scroll to the first page anchor when savedJokes becomes empty
+  useEffect(() => {
+    if (savedJokes.size === 0) {
+      // window.location.hash = ''; // Remove the current anchor from the URL
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top of the page
+    }
+  }, [savedJokes]);
 
   useEffect(() => {
     // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up
@@ -189,9 +183,7 @@ function App() {
         header.classList.remove('navbarOffsetMargin');
       }
     };
-
     window.addEventListener('scroll', handleScroll);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -284,27 +276,27 @@ function App() {
             </div>
           </article>
         </section>
-          {savedJokes && (
-            <section id='savedJokes'>
-              <article>
-                <div>
-                  <h3>Saved Jokes:</h3>
-                  <ul>
-                    {[...savedJokes].map((joke, index) => (
-                      <li key={index}>
-                        {joke}
-                        <button onClick={() => deleteJoke(joke)}>Delete</button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
-            </section>
-          )}
+        {savedJokes && (
+          <section id='savedJokes' ref={savedJokesRef}>
+            <article>
+              <div>
+                <h3>Saved Jokes:</h3>
+                <ul>
+                  {[...savedJokes].map((joke, index) => (
+                    <li key={index}>
+                      {joke}
+                      <button onClick={() => deleteJoke(joke)}>Delete</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          </section>
+        )}
       </div>
 
-        {errorMessage && <p>{errorMessage}</p>}
-      </div>
+      {errorMessage && <p>{errorMessage}</p>}
+    </div>
   );
 }
 
