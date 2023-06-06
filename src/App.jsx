@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 function App() {
 
-  // State variables for the hooks
+  // State variables
   const [textInput, setTextInput] = useState('');
   const [randomJoke, setRandomJoke] = useState('');
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
@@ -90,7 +90,7 @@ function App() {
       const manateeSetUp = manateeJoke.setup;
       const manateePunchLine = manateeJoke.punchline;
 
-      setRandomManateeJoke(`${manateeSetUp} <br> ${manateePunchLine}`);
+      setRandomManateeJoke(`${manateeSetUp} ${manateePunchLine}`);
     } catch (error) {
       console.error(error);
       setRandomManateeJoke("Failed to fetch joke :(");
@@ -122,7 +122,7 @@ function App() {
     }
   };
 
-  // Handle save joke click plus localStorage
+  // Handle save joke click to localStorage
   const saveJoke = () => {
     if (randomJoke) {
       setSavedJokes((prevSavedJokes) => {
@@ -150,7 +150,7 @@ function App() {
     savedJokesRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // handle delete of saved jokes from localStorage (update savedJokes array)
+  // handle delete of saved jokes from localStorage (update savedJokes Set)
   const deleteJoke = (joke) => {
     setSavedJokes((prevSavedJokes) => {
       const updatedSavedJokes = new Set([...prevSavedJokes]);
@@ -163,13 +163,12 @@ function App() {
   // Scroll to the first page anchor when savedJokes becomes empty
   useEffect(() => {
     if (savedJokes.size === 0) {
-      // window.location.hash = ''; // Remove the current anchor from the URL
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top of the page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [savedJokes]);
 
+  // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up
   useEffect(() => {
-    // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up
     const handleScroll = () => {
       const navbar = document.getElementById('navbar');
       const header = document.getElementById('header');
@@ -196,7 +195,7 @@ function App() {
         <a href="#jokes">Get Dad Jokes</a>
         <a href="#chuckNorrisJokes">Get Chuck Norris Jokes</a>
         <a href="#manateeJokes">Get Manatee Jokes</a>
-        {savedJokes.length > 0 && <a href='#savedJokes'>Saved Jokes</a>}
+        {savedJokes.size > 0 && <a href='#savedJokes'>Saved Jokes</a>}
       </nav>
 
       <section id="header">
@@ -276,7 +275,7 @@ function App() {
             </div>
           </article>
         </section>
-        {savedJokes && (
+        {savedJokes.size > 0 && (
           <section id='savedJokes' ref={savedJokesRef}>
             <article>
               <div>

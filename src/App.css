@@ -38,11 +38,15 @@ section {
 }
 
 #chuckNorrisJokes {
-    background: linear-gradient(to bottom, #a0a3ff, #fff);
+    background: linear-gradient(to bottom right, #a0a3ff, #fff);
 }
 
 #manateeJokes {
-    background: linear-gradient(to bottom, rgb(155, 188, 155), #ffffff);
+    background: linear-gradient(to bottom right, rgb(155, 188, 155), #ffffff);
+}
+
+#savedJokes {
+  background: linear-gradient(to bottom right, rgb(134, 209, 232), #ffffff);
 }
 
 h2 {
