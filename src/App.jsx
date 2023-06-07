@@ -1,6 +1,11 @@
 import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 
+import Navbar from './components/Navbar';
+import Content from './components/Content';
+import Header from './components/Header';
+import SavedJokes from './components/SavedJokes'
+
 function App() {
 
   // State variables
@@ -39,6 +44,7 @@ function App() {
       const myRandomJoke = joke.joke;
 
       setRandomJoke(myRandomJoke);
+      setErrorMessage("");
     } catch (error) {
       console.error(error);
       setRandomJoke("Failed to fetch joke :(");
@@ -61,6 +67,7 @@ function App() {
       const myRandomChuckNorrisJoke = chuckNorrisJoke.value;
 
       setRandomChuckNorrisJoke(myRandomChuckNorrisJoke);
+      setErrorMessage("");
     } catch (error) {
       console.error(error);
       setRandomChuckNorrisJoke("Failed to fetch joke :(");
@@ -91,6 +98,7 @@ function App() {
       const manateePunchLine = manateeJoke.punchline;
 
       setRandomManateeJoke(`${manateeSetUp} ${manateePunchLine}`);
+      setErrorMessage("");
     } catch (error) {
       console.error(error);
       setRandomManateeJoke("Failed to fetch joke :(");
@@ -190,111 +198,32 @@ function App() {
 
   return (
     <div>
-      <nav id="navbar">
-        <a href="#">Home</a>
-        <a href="#jokes">Get Dad Jokes</a>
-        <a href="#chuckNorrisJokes">Get Chuck Norris Jokes</a>
-        <a href="#manateeJokes">Get Manatee Jokes</a>
-        {savedJokes.size > 0 && <a href='#savedJokes'>Saved Jokes</a>}
-      </nav>
-
-      <section id="header">
-        <article>
-          <h2>Jokes from three joke categories</h2>
-          <form onSubmit={handleSubmit} id="myForm">
-            <label htmlFor="textInput" id="bot">Type Chuck Norris, Dad, or Manatee to choose a category:</label>
-            <input type="text" id="textInput" name="text" value={textInput} onChange={(e) => setTextInput(e.target.value)} />
-            <button type="submit" id="submit-button">Submit</button>
-          </form>
-        </article>
-      </section>
-
-      <div id="content">
-        <section id="jokes" ref={jokesRef}>
-          <article>
-            <div className="getRandomJokes">
-              <h2>Get Dad Jokes</h2>
-              <div id="getJoke">
-                <button onClick={fetchRandomJoke}>Get a Dad Joke</button>
-              </div>
-            </div>
-
-            <div className="randomJoke">
-              <div id="joke-container">
-                {randomJoke && (
-                  <div>
-                    <p>{randomJoke}</p>
-                    <button onClick={saveJoke}>Save this joke</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section id="chuckNorrisJokes" ref={chuckNorrisJokesRef}>
-          <article>
-            <div className="getRandomJokes">
-              <h2>Get Chuck Norris Jokes</h2>
-              <div id="getJoke">
-                <button onClick={fetchChuckNorrisJoke}>Get a Chuck Norris Joke</button>
-              </div>
-            </div>
-
-            <div className="randomJoke">
-              <div id="chuck-joke-container">
-                {randomChuckNorrisJoke && (
-                  <div>
-                    <p>{randomChuckNorrisJoke}</p>
-                    <button onClick={saveJoke}>Save this joke</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section id="manateeJokes" ref={manateeJokesRef}>
-          <article>
-            <div className="getRandomJokes">
-              <h2>Get Manatee Jokes</h2>
-              <div id="getJoke">
-                <button onClick={fetchManateeJoke}>Get a Manatee Joke</button>
-              </div>
-            </div>
-
-            <div className="randomJoke">
-              <div id="manatee-container">
-                {randomManateeJoke && (
-                  <div>
-                    <p>{randomManateeJoke}</p>
-                    <button onClick={saveJoke}>Save this joke</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </article>
-        </section>
-        {savedJokes.size > 0 && (
-          <section id='savedJokes' ref={savedJokesRef}>
-            <article>
-              <div>
-                <h3>Saved Jokes:</h3>
-                <ul>
-                  {[...savedJokes].map((joke, index) => (
-                    <li key={index}>
-                      {joke}
-                      <button onClick={() => deleteJoke(joke)}>Delete</button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          </section>
-        )}
-      </div>
-
-      {errorMessage && <p>{errorMessage}</p>}
+      <Navbar savedJokesCount={savedJokes.size} />
+      <Header
+        handleSubmit={handleSubmit}
+        errorMessage={errorMessage}
+        textInput={textInput}
+        setTextInput={setTextInput}
+      />
+      <Content
+        randomJoke={randomJoke}
+        randomChuckNorrisJoke={randomChuckNorrisJoke}
+        randomManateeJoke={randomManateeJoke}
+        fetchRandomJoke={fetchRandomJoke}
+        fetchChuckNorrisJoke={fetchChuckNorrisJoke}
+        fetchManateeJoke={fetchManateeJoke}
+        saveJoke={saveJoke}
+        jokesRef={jokesRef}
+        chuckNorrisJokesRef={chuckNorrisJokesRef}
+        manateeJokesRef={manateeJokesRef}
+      />
+      {savedJokes.size > 0 && (
+        <SavedJokes
+          savedJokes={savedJokes}
+          deleteJoke={deleteJoke}
+          savedJokesRef={savedJokesRef}
+        />
+      )}
     </div>
   );
 }
