@@ -14,12 +14,13 @@ function App() {
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
   const [randomManateeJoke, setRandomManateeJoke] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [scrollToSavedJokes, setScrollToSavedJokes] = useState(false);
 
   // Ref variables for reference to scroll there
   const jokesRef = useRef(null);
   const chuckNorrisJokesRef = useRef(null);
   const manateeJokesRef = useRef(null);
-  const savedJokesRef = useRef(null);
+  const savedJokesSectionRef = useRef(null);
 
   // Check if there are saved jokes, get them from localstorage, otherwise initialize empty Set to ensure uniquness
   const [savedJokes, setSavedJokes] = useState(() => {
@@ -155,7 +156,9 @@ function App() {
         return newSavedJokes;
       });
     }
-    savedJokesRef.current.scrollIntoView({ behavior: 'smooth' });
+
+    setScrollToSavedJokes(true);
+
   };
 
   // handle delete of saved jokes from localStorage (update savedJokes Set)
@@ -168,12 +171,12 @@ function App() {
     });
   };
 
-  // Scroll to the first page anchor when savedJokes becomes empty
   useEffect(() => {
-    if (savedJokes.size === 0) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scrollToSavedJokes && savedJokesSectionRef.current) {
+      savedJokesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      setScrollToSavedJokes(false);
     }
-  }, [savedJokes]);
+  }, [scrollToSavedJokes]);
 
   // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up
   useEffect(() => {
@@ -218,11 +221,12 @@ function App() {
         manateeJokesRef={manateeJokesRef}
       />
       {savedJokes.size > 0 && (
-        <SavedJokes
-          savedJokes={savedJokes}
-          deleteJoke={deleteJoke}
-          savedJokesRef={savedJokesRef}
-        />
+        <div ref={savedJokesSectionRef} >
+          <SavedJokes
+            savedJokes={savedJokes}
+            deleteJoke={deleteJoke}
+          />
+        </div>
       )}
     </div>
   );

@@ -1,8 +1,8 @@
 import React from 'react';
 
-const SavedJokes = ({ savedJokesRef, savedJokes, deleteJoke }) => {
+const SavedJokes = ({ savedJokes, deleteJoke }) => {
   return (
-    <section id='savedJokes' ref={savedJokesRef}>
+    <section id='savedJokes'>
             <article>
               <div>
                 <h3>Saved Jokes:</h3>
