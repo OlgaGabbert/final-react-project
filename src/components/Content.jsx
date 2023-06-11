@@ -4,7 +4,9 @@ const Content = ({
     jokesRef, 
     fetchRandomJoke, 
     randomJoke, 
-    saveJoke, 
+    saveRandomJoke,
+    saveRandomChuckNorrisJoke,
+    saveRandomManateeJoke, 
     chuckNorrisJokesRef, 
     fetchChuckNorrisJoke,
     randomChuckNorrisJoke,
@@ -28,7 +30,7 @@ const Content = ({
                 {randomJoke && (
                   <div>
                     <p>{randomJoke}</p>
-                    <button onClick={saveJoke}>Save this joke</button>
+                    <button onClick={saveRandomJoke}>Save this joke</button>
                   </div>
                 )}
               </div>
@@ -50,7 +52,7 @@ const Content = ({
                 {randomChuckNorrisJoke && (
                   <div>
                     <p>{randomChuckNorrisJoke}</p>
-                    <button onClick={saveJoke}>Save this joke</button>
+                    <button onClick={saveRandomChuckNorrisJoke}>Save this joke</button>
                   </div>
                 )}
               </div>
@@ -72,7 +74,7 @@ const Content = ({
                 {randomManateeJoke && (
                   <div>
                     <p>{randomManateeJoke}</p>
-                    <button onClick={saveJoke}>Save this joke</button>
+                    <button onClick={saveRandomManateeJoke}>Save this joke</button>
                   </div>
                 )}
               </div>

@@ -27,7 +27,7 @@ function App() {
     const savedJokesFromStorage = localStorage.getItem('savedJokes');
     return savedJokesFromStorage ? new Set(JSON.parse(savedJokesFromStorage)) : new Set();
   });
-
+  
   // Call Dad Jokes API
   const fetchRandomJoke = async () => {
     try {
@@ -131,35 +131,38 @@ function App() {
     }
   };
 
-  // Handle save joke click to localStorage
-  const saveJoke = () => {
-    if (randomJoke) {
-      setSavedJokes((prevSavedJokes) => {
-        const newSavedJokes = new Set([...prevSavedJokes, randomJoke]);
-        localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
-        return newSavedJokes;
-      });
-    }
+// Helper function to save a joke to localStorage
+const saveJokeToLocalStorage = (joke, setSavedJokes) => {
+  setSavedJokes(prevSavedJokes => {
+    const newSavedJokes = new Set([...prevSavedJokes, joke]);
+    localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
+    return newSavedJokes;
+  });
+}
 
-    if (randomChuckNorrisJoke) {
-      setSavedJokes((prevSavedJokes) => {
-        const newSavedJokes = new Set([...prevSavedJokes, randomChuckNorrisJoke]);
-        localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
-        return newSavedJokes;
-      });
-    }
+// Save random joke to localStorage
+const saveRandomJoke = () => {
+  if (randomJoke) {
+    saveJokeToLocalStorage(randomJoke, setSavedJokes);
+  }
+  setScrollToSavedJokes(true);
+};
 
-    if (randomManateeJoke) {
-      setSavedJokes((prevSavedJokes) => {
-        const newSavedJokes = new Set([...prevSavedJokes, randomManateeJoke]);
-        localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
-        return newSavedJokes;
-      });
-    }
+// Save random Chuck Norris joke to localStorage
+const saveRandomChuckNorrisJoke = () => {
+  if (randomChuckNorrisJoke) {
+    saveJokeToLocalStorage(randomChuckNorrisJoke, setSavedJokes);
+  }
+  setScrollToSavedJokes(true);
+};
 
-    setScrollToSavedJokes(true);
-
-  };
+// Save random Manatee joke to localStorage
+const saveRandomManateeJoke = () => {
+  if (randomManateeJoke) {
+    saveJokeToLocalStorage(randomManateeJoke, setSavedJokes);
+  }
+  setScrollToSavedJokes(true);
+};
 
   // handle delete of saved jokes from localStorage (update savedJokes Set)
   const deleteJoke = (joke) => {
@@ -215,7 +218,9 @@ function App() {
         fetchRandomJoke={fetchRandomJoke}
         fetchChuckNorrisJoke={fetchChuckNorrisJoke}
         fetchManateeJoke={fetchManateeJoke}
-        saveJoke={saveJoke}
+        saveRandomJoke={saveRandomJoke}
+        saveRandomChuckNorrisJoke={saveRandomChuckNorrisJoke}
+        saveRandomManateeJoke={saveRandomManateeJoke}
         jokesRef={jokesRef}
         chuckNorrisJokesRef={chuckNorrisJokesRef}
         manateeJokesRef={manateeJokesRef}
