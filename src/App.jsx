@@ -27,7 +27,7 @@ function App() {
     const savedJokesFromStorage = localStorage.getItem('savedJokes');
     return savedJokesFromStorage ? new Set(JSON.parse(savedJokesFromStorage)) : new Set();
   });
-  
+
   // Call Dad Jokes API
   const fetchRandomJoke = async () => {
     try {
@@ -131,38 +131,38 @@ function App() {
     }
   };
 
-// Helper function to save a joke to localStorage
-const saveJokeToLocalStorage = (joke, setSavedJokes) => {
-  setSavedJokes(prevSavedJokes => {
-    const newSavedJokes = new Set([...prevSavedJokes, joke]);
-    localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
-    return newSavedJokes;
-  });
-}
-
-// Save random joke to localStorage
-const saveRandomJoke = () => {
-  if (randomJoke) {
-    saveJokeToLocalStorage(randomJoke, setSavedJokes);
+  // Helper function to save a joke to localStorage
+  const saveJokeToLocalStorage = (joke, setSavedJokes) => {
+    setSavedJokes(prevSavedJokes => {
+      const newSavedJokes = new Set([...prevSavedJokes, joke]);
+      localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
+      return newSavedJokes;
+    });
   }
-  setScrollToSavedJokes(true);
-};
 
-// Save random Chuck Norris joke to localStorage
-const saveRandomChuckNorrisJoke = () => {
-  if (randomChuckNorrisJoke) {
-    saveJokeToLocalStorage(randomChuckNorrisJoke, setSavedJokes);
-  }
-  setScrollToSavedJokes(true);
-};
+  // Save random joke to localStorage
+  const saveRandomJoke = () => {
+    if (randomJoke) {
+      saveJokeToLocalStorage(randomJoke, setSavedJokes);
+    }
+    setScrollToSavedJokes(true);
+  };
 
-// Save random Manatee joke to localStorage
-const saveRandomManateeJoke = () => {
-  if (randomManateeJoke) {
-    saveJokeToLocalStorage(randomManateeJoke, setSavedJokes);
-  }
-  setScrollToSavedJokes(true);
-};
+  // Save random Chuck Norris joke to localStorage
+  const saveRandomChuckNorrisJoke = () => {
+    if (randomChuckNorrisJoke) {
+      saveJokeToLocalStorage(randomChuckNorrisJoke, setSavedJokes);
+    }
+    setScrollToSavedJokes(true);
+  };
+
+  // Save random Manatee joke to localStorage
+  const saveRandomManateeJoke = () => {
+    if (randomManateeJoke) {
+      saveJokeToLocalStorage(randomManateeJoke, setSavedJokes);
+    }
+    setScrollToSavedJokes(true);
+  };
 
   // handle delete of saved jokes from localStorage (update savedJokes Set)
   const deleteJoke = (joke) => {
@@ -181,36 +181,44 @@ const saveRandomManateeJoke = () => {
     }
   }, [scrollToSavedJokes]);
 
-  // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up
+  // Stick the navbar to the top if the user scrolls down and unstick if the user scrolls up 
   useEffect(() => {
+    let prevScrollPos = window.pageYOffset;
+  
     const handleScroll = () => {
       const navbar = document.getElementById('navbar');
-      const header = document.getElementById('header');
       const navbarOffset = navbar.offsetTop;
-
-      if (window.pageYOffset >= navbarOffset) {
+      const currentScrollPos = window.pageYOffset;
+  
+      if (currentScrollPos >= navbarOffset) {
         navbar.classList.add('sticky');
-        header.classList.add('navbarOffsetMargin');
       } else {
         navbar.classList.remove('sticky');
-        header.classList.remove('navbarOffsetMargin');
       }
+  
+      if (currentScrollPos < prevScrollPos) {
+        navbar.classList.remove('sticky');
+      }
+  
+      prevScrollPos = currentScrollPos;
     };
+  
     window.addEventListener('scroll', handleScroll);
+  
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
+  
   return (
     <div>
-      <Navbar savedJokesCount={savedJokes.size} />
       <Header
         handleSubmit={handleSubmit}
         errorMessage={errorMessage}
         textInput={textInput}
         setTextInput={setTextInput}
       />
+      <Navbar savedJokesCount={savedJokes.size} />
       <Content
         randomJoke={randomJoke}
         randomChuckNorrisJoke={randomChuckNorrisJoke}
