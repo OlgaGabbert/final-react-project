@@ -8,25 +8,33 @@ import SavedJokes from './components/SavedJokes'
 
 function App() {
 
-  // State variables
+  // State variables for parts of the page to be updated
+
+  // Handle OnChange value to capture user's input/choice of jokes
   const [textInput, setTextInput] = useState('');
+
+  // Fetched jokes from different APIs
   const [randomJoke, setRandomJoke] = useState('');
   const [randomChuckNorrisJoke, setRandomChuckNorrisJoke] = useState('');
   const [randomManateeJoke, setRandomManateeJoke] = useState('');
+
+  // Handle errors depending on the error
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Handle scrolling or not to the saved jokes
   const [scrollToSavedJokes, setScrollToSavedJokes] = useState(false);
+
+  // Check if there are saved jokes, get them from localStorage, otherwise initialize empty Set to ensure uniquness
+  const [savedJokes, setSavedJokes] = useState(() => {
+    const savedJokesFromStorage = localStorage.getItem('savedJokes'); // string representation of jokes out localStorage
+    return savedJokesFromStorage ? new Set(JSON.parse(savedJokesFromStorage)) : new Set(); // parses into array to then create Set out of it to ensure jokes are unique
+  });
 
   // Ref variables for reference to scroll there
   const jokesRef = useRef(null);
   const chuckNorrisJokesRef = useRef(null);
   const manateeJokesRef = useRef(null);
   const savedJokesSectionRef = useRef(null);
-
-  // Check if there are saved jokes, get them from localstorage, otherwise initialize empty Set to ensure uniquness
-  const [savedJokes, setSavedJokes] = useState(() => {
-    const savedJokesFromStorage = localStorage.getItem('savedJokes');
-    return savedJokesFromStorage ? new Set(JSON.parse(savedJokesFromStorage)) : new Set();
-  });
 
   // Call Dad Jokes API
   const fetchRandomJoke = async () => {
@@ -174,6 +182,7 @@ function App() {
     });
   };
 
+  // Checks if the scrollToSavedJokes updates (dependency) and scrolls to savedJokes, setScroll to false after 
   useEffect(() => {
     if (scrollToSavedJokes && savedJokesSectionRef.current) {
       savedJokesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
