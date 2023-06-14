@@ -113,3 +113,7 @@ input {
 .error {
   color: red;
 }
+
+li:hover {
+  font-size: 18px;
+}

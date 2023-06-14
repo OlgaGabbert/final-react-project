@@ -5,15 +5,15 @@ const SavedJokes = ({ savedJokes, deleteJoke }) => {
     <section id='savedJokes'>
             <article>
               <div>
-                <h3>Saved Jokes:</h3>
-                <ul>
+                <h2>Saved Jokes</h2>
+                <ol>
                   {[...savedJokes].map((joke, index) => (
                     <li key={index}>
                       {joke}
                       <button onClick={() => deleteJoke(joke)}>Delete</button>
                     </li>
                   ))}
-                </ul>
+                </ol>
               </div>
             </article>
           </section>
