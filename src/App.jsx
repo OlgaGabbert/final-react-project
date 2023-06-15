@@ -39,7 +39,7 @@ function App() {
   // Call Dad Jokes API
   const fetchRandomJoke = async () => {
     try {
-      const response = await fetch("https://icanhazdadjoke.com", {
+      const response = await fetch("https://icanhazdadjoke.com", { // API URL
         headers: {
           Accept: "application/json",
         },
@@ -52,11 +52,11 @@ function App() {
       const joke = await response.json();
       const myRandomJoke = joke.joke;
 
-      setRandomJoke(myRandomJoke);
-      setErrorMessage("");
+      setRandomJoke(myRandomJoke); // update the state variable with fetched item
+      setErrorMessage(""); // set Error state variable to empty
     } catch (error) {
       console.error(error);
-      setRandomJoke("Failed to fetch joke :(");
+      setRandomJoke("Failed to fetch joke :("); 
       setErrorMessage("Failed to fetch joke :(");
     }
   };
@@ -87,7 +87,7 @@ function App() {
   // Call Manatee Jokes API with vite_api_key;
   const fetchManateeJoke = async () => {
     try {
-      const apiKey = import.meta.env.VITE_API_KEY;
+      const apiKey = import.meta.env.VITE_API_KEY; // retrieve the API key from the environment variables
       const response = await fetch(
         "https://manatee-jokes.p.rapidapi.com/manatees/random",
         {
@@ -119,11 +119,11 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const text = textInput.toLowerCase();
+    const text = textInput.toLowerCase(); // for case-insensitive comparison
 
     try {
       if (text === 'dad') {
-        await fetchRandomJoke();
+        await fetchRandomJoke(); //"await" to wait for the asynchronous fetch functions to complete before scrolling 
         jokesRef.current.scrollIntoView({ behavior: 'smooth' });
       } else if (text === 'manatee') {
         await fetchManateeJoke();
@@ -134,16 +134,16 @@ function App() {
       } else {
         throw new Error('Check your spelling and try again.');
       }
-    } catch (err) {
-      setErrorMessage(err.message);
+    } catch (error) {
+      setErrorMessage(error.message);
     }
   };
 
   // Helper function to save a joke to localStorage
   const saveJokeToLocalStorage = (joke, setSavedJokes) => {
-    setSavedJokes(prevSavedJokes => {
-      const newSavedJokes = new Set([...prevSavedJokes, joke]);
-      localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes]));
+    setSavedJokes(prevSavedJokes => { // update the state using previous state 
+      const newSavedJokes = new Set([...prevSavedJokes, joke]); // use previously saved jokes by spreading the elements into a new array
+      localStorage.setItem('savedJokes', JSON.stringify([...newSavedJokes])); // localStorage stores only string data
       return newSavedJokes;
     });
   }
